@@ -22,28 +22,13 @@ public class HashDQ3 {
 	public static void main(String[] args) throws Exception{
 		
 		//Part1: Getting the messages
-		byte[] message1 = "Meet at 6:30 pm on 20.".getBytes();
-		byte[] message2 = "Buy 270 RY at MarketP.".getBytes();
-		byte[] message3 = "Temperature 28 in YYZ.".getBytes();
-		byte[] message4 = "Approach runway 24 SW.".getBytes();
+		byte[] message = "Cleared to land, Delta 86".getBytes();
 		
-		byte[] key = CryptoTools.hexToBytes("7CEB25A45B2435BF457AAE");
 		
-		ByteArrayOutputStream concat = new ByteArrayOutputStream();
-		for(int i=0;i<key.length;i++) {
-			concat.write(key[i]);
-		}
+		byte[] rawKey = "This is an ultra secret key".getBytes();
 		
-		for(int i=0;i<message3.length;i++) {
-			concat.write(message3[i]);
-		}
-		
-		for(int i=0;i<key.length;i++) {
-			concat.write(key[i]);
-		}
-		
-		byte[] finalConcat = concat.toByteArray();
-		/**
+		//Here we are padding the given key to match the given block size. 
+		//Padding always happens to the right i.e. the left part contains the real deal. 
 		ByteArrayOutputStream padding = new ByteArrayOutputStream();
 		for(int i=0;i<rawKey.length;i++) {
 			padding.write(rawKey[i]);
@@ -52,9 +37,11 @@ public class HashDQ3 {
 			padding.write(0);
 		}
 		
-		secretKey = padding.toByteArray();
+		byte[] secretKey = padding.toByteArray();
+		
 		//Part2: Padding the iPad and the oPad
 		byte[] rawIpad = CryptoTools.hexToBytes("36");
+		System.out.println(rawIpad.length);
 		byte[] iPad = new byte[64];
 		for(int i=0;i<64;i++) {
 			iPad[i] = rawIpad[0];
@@ -83,15 +70,17 @@ public class HashDQ3 {
 			bos.write(message[k]);
 		}
 		byte[] levelOnePT = bos.toByteArray();
-		System.out.println("message 0: "+message[2]+" "+levelOnePT[66]);
+	
 		
-		*/
+		
+		
 		//Part4: Hashing the levelOnePT
 		MessageDigest md = MessageDigest.getInstance("SHA-1");
-		byte[] finalHash = md.digest(finalConcat);
+		byte[] innerHash = md.digest(levelOnePT);
+		//byte[] finalHash = md.digest(finalConcat);
 		
 		//Part5: Concatenating the innerHash with the oPadKey
-		/**
+		
 		ByteArrayOutputStream outerBos = new ByteArrayOutputStream();
 		for(int i=0;i<oPadKey.length;i++) {
 			outerBos.write(oPadKey[i]);
@@ -104,8 +93,8 @@ public class HashDQ3 {
 		//Part6: Hashing the levelTwoPT
 		MessageDigest finalHash = MessageDigest.getInstance("SHA-1");
 		byte[] outerHash = finalHash.digest(levelTwoPT);
-		*/
-		System.out.println("Answer: "+CryptoTools.bytesToHex(finalHash));
+		
+		//System.out.println("Answer: "+CryptoTools.bytesToHex(finalHash));
 		
 		
 	}
